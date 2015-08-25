@@ -1,0 +1,1718 @@
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.9ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (1.0ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (0.7ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (0.7ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.7ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.7ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.6ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:05:38 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-02 20:05:38.598606"], ["updated_at", "2015-08-02 20:05:38.598606"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:05:38.602758"], ["updated_at", "2015-08-02 20:05:38.602758"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 25ms (ActiveRecord: 1.8ms)
+  [1m[35m (0.1ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (1.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:05:38 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-02 20:05:38.613238"], ["updated_at", "2015-08-02 20:05:38.613238"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:05:38.614503"], ["updated_at", "2015-08-02 20:05:38.614503"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 500 Internal Server Error in 4ms (ActiveRecord: 0.7ms)
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:05:38 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-02 20:05:38.621087"], ["updated_at", "2015-08-02 20:05:38.621087"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:05:38.622287"], ["updated_at", "2015-08-02 20:05:38.622287"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 4ms (ActiveRecord: 0.7ms)
+  [1m[35m (0.1ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (2.0ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (1.0ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (1.1ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (1.1ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.9ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.7ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.9ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.8ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.8ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.8ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:07:33 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.3ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-02 20:07:33.400127"], ["updated_at", "2015-08-02 20:07:33.400127"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (1.1ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:07:33.404264"], ["updated_at", "2015-08-02 20:07:33.404264"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 25ms (ActiveRecord: 2.3ms)
+  [1m[35m (0.1ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (1.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:07:33 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-02 20:07:33.414324"], ["updated_at", "2015-08-02 20:07:33.414324"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:07:33.415889"], ["updated_at", "2015-08-02 20:07:33.415889"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 500 Internal Server Error in 5ms (ActiveRecord: 0.8ms)
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:07:33 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-02 20:07:33.423802"], ["updated_at", "2015-08-02 20:07:33.423802"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:07:33.425363"], ["updated_at", "2015-08-02 20:07:33.425363"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 5ms (ActiveRecord: 0.7ms)
+  [1m[35m (0.1ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.7ms)[0m  [1mrollback transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.9ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (0.8ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (0.8ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (0.8ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.7ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:07:52 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-02 20:07:53.029405"], ["updated_at", "2015-08-02 20:07:53.029405"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.8ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:07:53.035178"], ["updated_at", "2015-08-02 20:07:53.035178"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-02 20:07:53.038259"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "b1b7706acba7bf0593e9412e37d5dd8e7a3b19795cc151652bfc6eb92c01"], ["nonce", "e7a24e7392e2ed508a51a176ac5ca7"], ["scopes", "user admin editor"], ["created_at", "2015-08-02 20:07:53.042418"], ["updated_at", "2015-08-02 20:07:53.042418"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 201 Created in 60ms (Views: 0.3ms | ActiveRecord: 2.1ms)
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (1.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:07:53 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-02 20:07:53.051557"], ["updated_at", "2015-08-02 20:07:53.051557"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:07:53.053215"], ["updated_at", "2015-08-02 20:07:53.053215"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-02 20:07:53.054481"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "4310d31624be8337ec23e2cc0ca9596051357e4e34ff1f8472c5349b09a5"], ["nonce", "0706fdb384e9564929b69a11d13b32"], ["scopes", "user admin editor"], ["created_at", "2015-08-02 20:07:53.055104"], ["updated_at", "2015-08-02 20:07:53.055104"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 7ms (Views: 0.2ms | ActiveRecord: 1.1ms)
+  [1m[35m (0.1ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 13:07:53 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-02 20:07:53.061420"], ["updated_at", "2015-08-02 20:07:53.061420"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:07:53.062612"], ["updated_at", "2015-08-02 20:07:53.062612"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-02 20:07:53.063503"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "192d6c6dc293f996271a766120eac32d5f58db7740933b16911682a2030d"], ["nonce", "9d371e62d0750c78b0d26b7c5a803f"], ["scopes", "user admin editor"], ["created_at", "2015-08-02 20:07:53.063995"], ["updated_at", "2015-08-02 20:07:53.063995"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 5ms (Views: 0.1ms | ActiveRecord: 0.7ms)
+  [1m[35mAuthCredential Load (0.1ms)[0m  SELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.1ms)[0m  SELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.8ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (0.7ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (0.7ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.7ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.7ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+-----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_array_style_attributes_mapping
+-----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Akinci"], ["created_at", "2015-08-02 20:08:07.391645"], ["updated_at", "2015-08-02 20:08:07.391645"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:08:07.396053"], ["updated_at", "2015-08-02 20:08:07.396053"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-02 20:08:07.398918"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "c0d499599e8d0f180be7b1f726856737f064e9c629bc0688b55e8a711860"], ["nonce", "c314d40c00090a37341a3137b6d876"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-02 20:08:07.403032"], ["updated_at", "2015-08-02 20:08:07.403032"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.0ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.2ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438546087)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.1ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.1ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.7ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+-------------------------------------------------
+AuthenticateWithOmniauthTest: test_creates_a_user
+-------------------------------------------------
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-02 20:08:07.421043"], ["updated_at", "2015-08-02 20:08:07.421043"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:08:07.422560"], ["updated_at", "2015-08-02 20:08:07.422560"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-02 20:08:07.423595"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "ee538c47da50da9e84d4fda78afdc9996983e3aa26c9e75c8b8ef7f0f69b"], ["nonce", "1d98c0af8b41c4f9aadc466b87780c"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-02 20:08:07.424198"], ["updated_at", "2015-08-02 20:08:07.424198"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.0ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438546087)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_hash_style_attributes_mapping
+----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-02 20:08:07.429636"], ["updated_at", "2015-08-02 20:08:07.429636"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 20:08:07.431088"], ["updated_at", "2015-08-02 20:08:07.431088"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-02 20:08:07.432101"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "f8cdf4f5a16969be9f188c35fb2a5211e72c3efb813f981dea92d4bbc229"], ["nonce", "51a85c9eb0a74250a780dfbff66e46"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-02 20:08:07.432626"], ["updated_at", "2015-08-02 20:08:07.432626"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438546087)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.8ms)[0m  [1mrollback transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.2ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (1.2ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.2ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (1.1ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (1.1ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.7ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+-----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_array_style_attributes_mapping
+-----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.2ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Akinci"], ["created_at", "2015-08-02 23:18:27.562768"], ["updated_at", "2015-08-02 23:18:27.562768"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (1.0ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 23:18:27.569762"], ["updated_at", "2015-08-02 23:18:27.569762"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-02 23:18:27.573408"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "7dd395027dd90586c2806687505701c5fa822fc10a61ca275a9191039414"], ["nonce", "f1838f077f19370b2bf2e9e6bc06fc"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-02 23:18:27.579461"], ["updated_at", "2015-08-02 23:18:27.579461"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.2ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438557507)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+-------------------------------------------------
+AuthenticateWithOmniauthTest: test_creates_a_user
+-------------------------------------------------
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-02 23:18:27.597978"], ["updated_at", "2015-08-02 23:18:27.597978"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 23:18:27.599497"], ["updated_at", "2015-08-02 23:18:27.599497"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-02 23:18:27.600554"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "190da2c2cfa664d5aeebfa78306e7417f6ed71efdf4beac2110435b04fe4"], ["nonce", "e562b481a00c8b17de7a82a777c9ab"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-02 23:18:27.601131"], ["updated_at", "2015-08-02 23:18:27.601131"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.0ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438557507)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.1ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.1ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_hash_style_attributes_mapping
+----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-02 23:18:27.607992"], ["updated_at", "2015-08-02 23:18:27.607992"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 23:18:27.609549"], ["updated_at", "2015-08-02 23:18:27.609549"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-02 23:18:27.610817"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "6051587f412f03c850df4f3fae05df9a1dc7ffa57e715898170e0f73c95a"], ["nonce", "eb9f068af200cd2f185d4496b5869c"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-02 23:18:27.611437"], ["updated_at", "2015-08-02 23:18:27.611437"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438557507)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+----------------------------------
+RoutesTest: test_omniauth_callback
+----------------------------------
+  [1m[36m (0.1ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_simple_model_names
+------------------------------------------------------------------
+  [1m[36m (0.1ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_with_skip_routes
+------------------------------------------------------------
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+----------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_namespaced_model_names
+----------------------------------------------------------------------
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 16:18:27 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-02 23:18:27.645651"], ["updated_at", "2015-08-02 23:18:27.645651"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 23:18:27.647002"], ["updated_at", "2015-08-02 23:18:27.647002"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-02 23:18:27.648003"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "295c73b018ade7e69285dc30ad88a71f2442aa9efad4dd390c755a0c9947"], ["nonce", "7cbf5219b8de4fc2dce14df80e9c25"], ["scopes", "user admin editor"], ["created_at", "2015-08-02 23:18:27.648535"], ["updated_at", "2015-08-02 23:18:27.648535"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 6ms (ActiveRecord: 0.8ms)
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.1ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 16:18:27 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-02 23:18:27.655176"], ["updated_at", "2015-08-02 23:18:27.655176"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 23:18:27.656405"], ["updated_at", "2015-08-02 23:18:27.656405"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-02 23:18:27.657257"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "03573f5c66e1c7a9d20b6739143b65eb46392bd6505d4275243bfa3e19ab"], ["nonce", "1398fdc9429140eb17c5bfdbcf5e37"], ["scopes", "user admin editor"], ["created_at", "2015-08-02 23:18:27.657760"], ["updated_at", "2015-08-02 23:18:27.657760"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 5ms (ActiveRecord: 0.8ms)
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.7ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 16:18:27 -0700
+Processing by AuthenticationTokensController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-02 23:18:27.664071"], ["updated_at", "2015-08-02 23:18:27.664071"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-02 23:18:27.665273"], ["updated_at", "2015-08-02 23:18:27.665273"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-02 23:18:27.666120"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "b98c58b802ddd61bbfe015545b6af32c1a9f3a5d70d424b7691a08125cb0"], ["nonce", "822c648ad1045b5d52d3adf76a9474"], ["scopes", "user admin editor"], ["created_at", "2015-08-02 23:18:27.666598"], ["updated_at", "2015-08-02 23:18:27.666598"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 5ms (ActiveRecord: 0.8ms)
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.1ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.0ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (0.8ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (0.8ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (0.8ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.7ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.7ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.6ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.6ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.6ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:20:28 -0700
+  [1m[35m (0.3ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:20:28 -0700
+  [1m[36m (0.2ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.1ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.4ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:20:28 -0700
+  [1m[35m (0.2ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+-----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_array_style_attributes_mapping
+-----------------------------------------------------------------
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Akinci"], ["created_at", "2015-08-03 00:20:29.012839"], ["updated_at", "2015-08-03 00:20:29.012839"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (1.0ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:20:29.021205"], ["updated_at", "2015-08-03 00:20:29.021205"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:20:29.025398"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "2aaff0c48543b0b7d6ad6a3047b115b766653de420359b6cf8f9c876ef4f"], ["nonce", "9856e8f87be1873b35c3f40f196b69"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:20:29.031679"], ["updated_at", "2015-08-03 00:20:29.031679"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.1ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561229)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+-------------------------------------------------
+AuthenticateWithOmniauthTest: test_creates_a_user
+-------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-03 00:20:29.046645"], ["updated_at", "2015-08-03 00:20:29.046645"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:20:29.048653"], ["updated_at", "2015-08-03 00:20:29.048653"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:20:29.049844"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "4c4fcb0c83f4f4d8d1ab8b8ef2ed357949521a214c652ace6317b095664a"], ["nonce", "468d550648d237645f71d0fb02de67"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:20:29.050414"], ["updated_at", "2015-08-03 00:20:29.050414"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.1ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561229)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_hash_style_attributes_mapping
+----------------------------------------------------------------
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:20:29.056506"], ["updated_at", "2015-08-03 00:20:29.056506"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:20:29.057900"], ["updated_at", "2015-08-03 00:20:29.057900"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:20:29.058872"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "a0c612e58a71c3f08f5289abf90bc6676ffb67b7ce8b244059af1e6f2ceb"], ["nonce", "eafc3781a2d22a6caaec4a52a440f5"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:20:29.059395"], ["updated_at", "2015-08-03 00:20:29.059395"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.0ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561229)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.8ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+----------------------------------
+RoutesTest: test_omniauth_callback
+----------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_with_skip_routes
+------------------------------------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_namespaced_model_names
+----------------------------------------------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_simple_model_names
+------------------------------------------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.6ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (0.8ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (0.8ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.7ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (1.0ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (1.1ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.9ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.8ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.8ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+-------------------------------------------------
+AuthenticateWithOmniauthTest: test_creates_a_user
+-------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-03 00:21:32.592240"], ["updated_at", "2015-08-03 00:21:32.592240"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (1.0ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:21:32.596801"], ["updated_at", "2015-08-03 00:21:32.596801"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:21:32.600099"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "56119d592c481b726190162136c8f971481203774a6e957e32f9c786606d"], ["nonce", "c356c4e84b03ea16781dd9449c37c1"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:21:32.604902"], ["updated_at", "2015-08-03 00:21:32.604902"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.1ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561292)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (1.3ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_hash_style_attributes_mapping
+----------------------------------------------------------------
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:21:32.618951"], ["updated_at", "2015-08-03 00:21:32.618951"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:21:32.620586"], ["updated_at", "2015-08-03 00:21:32.620586"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:21:32.622300"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "c0a1b76e27fc822b8102962facdb6c95fa9e2b2054fbca0401409928c124"], ["nonce", "282695fcfe40ca83ea58e8fbc46b10"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:21:32.623037"], ["updated_at", "2015-08-03 00:21:32.623037"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.0ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561292)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+-----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_array_style_attributes_mapping
+-----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Akinci"], ["created_at", "2015-08-03 00:21:32.630456"], ["updated_at", "2015-08-03 00:21:32.630456"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:21:32.632247"], ["updated_at", "2015-08-03 00:21:32.632247"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:21:32.633602"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "4881909327c51f09e58ae2033cc8d2064f82e3de24e01f8c9bb2530215f2"], ["nonce", "b3f5aed15b0f62f29ad58250d1278c"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:21:32.634259"], ["updated_at", "2015-08-03 00:21:32.634259"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561292)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:21:32 -0700
+  [1m[36m (0.2ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:21:32 -0700
+  [1m[35m (0.2ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.1ms)[0m  DELETE FROM "users";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:21:32 -0700
+  [1m[36m (0.3ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.4ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_namespaced_model_names
+----------------------------------------------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_with_skip_routes
+------------------------------------------------------------
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_simple_model_names
+------------------------------------------------------------------
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------
+RoutesTest: test_omniauth_callback
+----------------------------------
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.6ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (1.0ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (1.2ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.9ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.7ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.8ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.8ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+-----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_array_style_attributes_mapping
+-----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Akinci"], ["created_at", "2015-08-03 00:23:42.546672"], ["updated_at", "2015-08-03 00:23:42.546672"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:23:42.550975"], ["updated_at", "2015-08-03 00:23:42.550975"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:23:42.553847"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "7f56999f6f892f945b5d561c7c38d81d39e26f3d30fb82aec721f962501e"], ["nonce", "59f11858d566a4a0d0e495d70659fb"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:23:42.558454"], ["updated_at", "2015-08-03 00:23:42.558454"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.1ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561422)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (1.1ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+-------------------------------------------------
+AuthenticateWithOmniauthTest: test_creates_a_user
+-------------------------------------------------
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-03 00:23:42.571432"], ["updated_at", "2015-08-03 00:23:42.571432"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:23:42.572584"], ["updated_at", "2015-08-03 00:23:42.572584"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:23:42.573454"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "e919edae7f3498f140cf30fdecd7e227fbb74d9f9ec9943c2b2836e351f8"], ["nonce", "76fb39d77c3e2851dbc041a3c5ef81"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:23:42.574010"], ["updated_at", "2015-08-03 00:23:42.574010"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.0ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.0ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561422)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_hash_style_attributes_mapping
+----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:23:42.578972"], ["updated_at", "2015-08-03 00:23:42.578972"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:23:42.581005"], ["updated_at", "2015-08-03 00:23:42.581005"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:23:42.582929"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "70f5bdb0eb99047531c228f2cb04520b37d1d70ff4133eaa6f23cad096f4"], ["nonce", "66ca281392a94bec97762db29ffa7d"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:23:42.583725"], ["updated_at", "2015-08-03 00:23:42.583725"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561422)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+----------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_namespaced_model_names
+----------------------------------------------------------------------
+  [1m[36m (0.1ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_simple_model_names
+------------------------------------------------------------------
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_with_skip_routes
+------------------------------------------------------------
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:23:42 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:23:42.614879"], ["updated_at", "2015-08-03 00:23:42.614879"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:23:42.616448"], ["updated_at", "2015-08-03 00:23:42.616448"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:23:42.617475"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "7d07aa61a539a9165b4d3ae8918f6e5e0c196d67369dc885f2387f62bc2d"], ["nonce", "2466032348e35c62dd63b32753820a"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:23:42.618105"], ["updated_at", "2015-08-03 00:23:42.618105"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 6ms (ActiveRecord: 0.9ms)
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:23:42 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:23:42.624758"], ["updated_at", "2015-08-03 00:23:42.624758"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:23:42.626155"], ["updated_at", "2015-08-03 00:23:42.626155"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:23:42.627108"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "a5f202a8adb5270b64836b4ba5437e664f32bb67c2fc039db430bcfe2fd3"], ["nonce", "3f9cbc234302eddbe8abb4d3dae9b6"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:23:42.627622"], ["updated_at", "2015-08-03 00:23:42.627622"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 5ms (ActiveRecord: 0.7ms)
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.7ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:23:42 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:23:42.634752"], ["updated_at", "2015-08-03 00:23:42.634752"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:23:42.636241"], ["updated_at", "2015-08-03 00:23:42.636241"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:23:42.637197"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "3f68a539470c19f11c45e6bd15c5cff0a5ada27fd6b7a5d4593e23b95227"], ["nonce", "2c1176498287708c285c54a09ce09e"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:23:42.638030"], ["updated_at", "2015-08-03 00:23:42.638030"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 500 Internal Server Error in 6ms (ActiveRecord: 0.8ms)
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.1ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.7ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+----------------------------------
+RoutesTest: test_omniauth_callback
+----------------------------------
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (2.0ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (0.7ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (0.9ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.6ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.8ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_simple_model_names
+------------------------------------------------------------------
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_with_skip_routes
+------------------------------------------------------------
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_namespaced_model_names
+----------------------------------------------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------
+RoutesTest: test_omniauth_callback
+----------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:29:17 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.2ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-03 00:29:17.737827"], ["updated_at", "2015-08-03 00:29:17.737827"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (1.0ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:29:17.741943"], ["updated_at", "2015-08-03 00:29:17.741943"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:29:17.745478"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "2862a940512a53dcf69dbef61bad390207caafdcc35ceaadc3644a84f7fe"], ["nonce", "0aa5a466276b5cf5706c9b6dae9077"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:29:17.750294"], ["updated_at", "2015-08-03 00:29:17.750294"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 201 Created in 31ms (Views: 0.2ms | ActiveRecord: 2.4ms)
+  [1m[36mAuthCredential Load (0.1ms)[0m  [1mSELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.1ms)[0m  SELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.1ms)[0m  SELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:29:17 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-03 00:29:17.758629"], ["updated_at", "2015-08-03 00:29:17.758629"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:29:17.760123"], ["updated_at", "2015-08-03 00:29:17.760123"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:29:17.761344"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "6085582ca0a95d02c394b7cf2d1e9c294bb0c05ae691c6879baffe70f8d4"], ["nonce", "ca06246da4eda967620dac683374b1"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:29:17.762083"], ["updated_at", "2015-08-03 00:29:17.762083"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 201 Created in 6ms (Views: 0.1ms | ActiveRecord: 0.9ms)
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:29:17 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-03 00:29:17.768289"], ["updated_at", "2015-08-03 00:29:17.768289"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:29:17.769502"], ["updated_at", "2015-08-03 00:29:17.769502"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:29:17.770326"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "98ff0b41d1575bd141d199de8d9e886a78becffd2fb72b1c9b7ee154fd33"], ["nonce", "38d028ca741bf55892c058b32d73dd"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:29:17.770801"], ["updated_at", "2015-08-03 00:29:17.770801"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 201 Created in 5ms (Views: 0.1ms | ActiveRecord: 0.7ms)
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.9ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_hash_style_attributes_mapping
+----------------------------------------------------------------
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:29:17.777037"], ["updated_at", "2015-08-03 00:29:17.777037"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:29:17.778615"], ["updated_at", "2015-08-03 00:29:17.778615"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:29:17.779770"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "f64ec29aba573114d9e42bf67e9986e160c572af6374433cdf57d936568a"], ["nonce", "0631c1276ab54f34d591bf0ee88167"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:29:17.780411"], ["updated_at", "2015-08-03 00:29:17.780411"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.1ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561757)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.8ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+-----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_array_style_attributes_mapping
+-----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Akinci"], ["created_at", "2015-08-03 00:29:17.791893"], ["updated_at", "2015-08-03 00:29:17.791893"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:29:17.793426"], ["updated_at", "2015-08-03 00:29:17.793426"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:29:17.794313"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "25454bb8645be67ecc6bdd720909ba081a44e28dfebda428c09ef7cd471c"], ["nonce", "b5e8457d2fddc006a758cc8a476716"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:29:17.794838"], ["updated_at", "2015-08-03 00:29:17.794838"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561757)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.6ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+-------------------------------------------------
+AuthenticateWithOmniauthTest: test_creates_a_user
+-------------------------------------------------
+  [1m[36mFacebookCredential Load (0.0ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-03 00:29:17.800252"], ["updated_at", "2015-08-03 00:29:17.800252"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:29:17.802046"], ["updated_at", "2015-08-03 00:29:17.802046"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:29:17.803194"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "6c1b9449045add99f1a9d5f8b5f61b5feff465d2f8de988abb87095e3bd9"], ["nonce", "fb86bb3b5fe5d9fe9ac7fde9ed2955"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:29:17.803811"], ["updated_at", "2015-08-03 00:29:17.803811"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.0ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561757)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.6ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.2ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (0.8ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.7ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.6ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.6ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+----------------------------------
+RoutesTest: test_omniauth_callback
+----------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+-----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_array_style_attributes_mapping
+-----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Akinci"], ["created_at", "2015-08-03 00:31:05.483924"], ["updated_at", "2015-08-03 00:31:05.483924"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (1.0ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:31:05.488749"], ["updated_at", "2015-08-03 00:31:05.488749"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:31:05.491879"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "8d1e7c2c7ce12d275e64c797adea4dc6037a569d14c692daef19b67ee715"], ["nonce", "27fc694d02267c6c19d73a12b2b44c"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:31:05.496296"], ["updated_at", "2015-08-03 00:31:05.496296"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.1ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561865)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (1.4ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+-------------------------------------------------
+AuthenticateWithOmniauthTest: test_creates_a_user
+-------------------------------------------------
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-08-03 00:31:05.509339"], ["updated_at", "2015-08-03 00:31:05.509339"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (1.3ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:31:05.511257"], ["updated_at", "2015-08-03 00:31:05.511257"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:31:05.513634"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "0de0a2b1e7dde02973e4c9e2af522c5f42109997b4cf6f04b3a6ab680d12"], ["nonce", "370a2f29f1b04ca3585d6b5833d200"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:31:05.514345"], ["updated_at", "2015-08-03 00:31:05.514345"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "auth_credentials"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "facebook_credentials"
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.0ms)[0m  SELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561865)  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.6ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+----------------------------------------------------------------
+AuthenticateWithOmniauthTest: test_hash_style_attributes_mapping
+----------------------------------------------------------------
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:31:05.520002"], ["updated_at", "2015-08-03 00:31:05.520002"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:31:05.521198"], ["updated_at", "2015-08-03 00:31:05.521198"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:31:05.522136"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "326ea8448d9cea43e928dcecd15077267eabfe5d91b569e61e4025766a63"], ["nonce", "57e9986af471e914fa81a9446cb89c"], ["scopes", "new dance edit lol"], ["created_at", "2015-08-03 00:31:05.522611"], ["updated_at", "2015-08-03 00:31:05.522611"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users"[0m
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "auth_credentials"
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "facebook_credentials"[0m
+  [1m[35mUser Load (0.0ms)[0m  SELECT  "users".* FROM "users"  ORDER BY "users"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT "auth_credentials".* FROM "auth_credentials" WHERE "auth_credentials"."authenticatable_id" = ? AND "auth_credentials"."authenticatable_type" = ? AND (expires_at > 1438561865)[0m  [["authenticatable_id", 1], ["authenticatable_type", "User"]]
+  [1m[35m (0.0ms)[0m  DELETE FROM "auth_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'auth_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "facebook_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'facebook_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "users";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'users';
+  [1m[36m (0.5ms)[0m  [1mrollback transaction[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+---------------------------------
+OmniauthTest: test_creates_a_user
+---------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:31:05 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[36mFacebookCredential Load (0.1ms)[0m  [1mSELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1[0m  [["uid", "123"]]
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:31:05.532507"], ["updated_at", "2015-08-03 00:31:05.532507"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:31:05.533770"], ["updated_at", "2015-08-03 00:31:05.533770"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)  [["expires_at", "2015-10-03 00:31:05.534672"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "4e42f1d91d5aa8e55452cc02b542068c881b9ab5afed84cdfd55b35d5dcb"], ["nonce", "b2f0373cdef9f898647a32c7168854"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:31:05.535166"], ["updated_at", "2015-08-03 00:31:05.535166"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 6ms (Views: 0.2ms | ActiveRecord: 0.9ms)
+  [1m[35m (0.0ms)[0m  SELECT COUNT(*) FROM "users"
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.7ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+----------------------------------------
+OmniauthTest: test_responds_successfully
+----------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:31:05 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:31:05.543670"], ["updated_at", "2015-08-03 00:31:05.543670"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:31:05.545731"], ["updated_at", "2015-08-03 00:31:05.545731"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:31:05.547003"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "ab6f98400e92b04b5a2e50ac423fd9e94d1dd9cee2d0ee77f25e80374b80"], ["nonce", "97b20409d63968629d67d0615749a8"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:31:05.547660"], ["updated_at", "2015-08-03 00:31:05.547660"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 201 Created in 8ms (Views: 0.1ms | ActiveRecord: 1.2ms)
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.1ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 17:31:05 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.1ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.0ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "users" ("email", "last_name", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "ersin@twomaestros.com"], ["last_name", "Ersin"], ["created_at", "2015-08-03 00:31:05.553354"], ["updated_at", "2015-08-03 00:31:05.553354"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.0ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 00:31:05.554470"], ["updated_at", "2015-08-03 00:31:05.554470"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 00:31:05.555275"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "20caa11931227badaa1ebe4d82b04b9a814399a571e1d30ddef5e627f683"], ["nonce", "daace9cc2e117d22021ac0579f4a86"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 00:31:05.555954"], ["updated_at", "2015-08-03 00:31:05.555954"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 201 Created in 6ms (Views: 0.2ms | ActiveRecord: 0.8ms)
+  [1m[36mAuthCredential Load (0.1ms)[0m  [1mSELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.1ms)[0m  SELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1
+  [1m[36mAuthCredential Load (0.0ms)[0m  [1mSELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1[0m
+  [1m[35mAuthCredential Load (0.1ms)[0m  SELECT  "auth_credentials".* FROM "auth_credentials"  ORDER BY "auth_credentials"."id" DESC LIMIT 1
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "auth_credentials";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'auth_credentials';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM "facebook_credentials";
+  [1m[36m (0.0ms)[0m  [1mSELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';[0m
+  [1m[35m (0.0ms)[0m  DELETE FROM sqlite_sequence where name = 'facebook_credentials';
+  [1m[36m (0.0ms)[0m  [1mDELETE FROM "users";[0m
+  [1m[35m (0.0ms)[0m  SELECT name FROM sqlite_master WHERE type='table' AND name='sqlite_sequence';
+  [1m[36m (0.1ms)[0m  [1mDELETE FROM sqlite_sequence where name = 'users';[0m
+  [1m[35m (0.5ms)[0m  rollback transaction
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+----------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_namespaced_model_names
+----------------------------------------------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_for_simple_model_names
+------------------------------------------------------------------
+  [1m[35m (0.1ms)[0m  rollback transaction
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+------------------------------------------------------------
+CroesusGeneratorTest: test_route_generation_with_skip_routes
+------------------------------------------------------------
+  [1m[35m (0.0ms)[0m  rollback transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (1.1ms)[0m  [1mCREATE TABLE "auth_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "expires_at" datetime NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "secret" varchar NOT NULL, "nonce" varchar NOT NULL, "scopes" varchar NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (1.1ms)[0m  [1mCREATE UNIQUE INDEX "idx_auth_cred_on_auth_type_auth_id" ON "auth_credentials" ("authenticatable_type", "authenticatable_id")[0m
+  [1m[35m (0.2ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='idx_auth_cred_on_auth_type_auth_id' AND type='index'
+
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX "idx_auth_cred_on_expires_at" ON "auth_credentials" ("expires_at")[0m
+  [1m[35m (1.0ms)[0m  CREATE TABLE "facebook_credentials" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "authenticatable_type" varchar NOT NULL, "authenticatable_id" integer NOT NULL, "uid" varchar NOT NULL, "token" varchar NOT NULL, "expires_at" datetime NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (1.0ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar, "first_name" varchar, "last_name" varchar, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
+  [1m[36m (0.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.1ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230803')
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150703230801')[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150703230802')
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+------------------------------------------------
+OmniauthTest: test_responds_with_credential_info
+------------------------------------------------
+Started GET "/users/auth/facebook/callback" for 127.0.0.1 at 2015-08-02 18:10:15 -0700
+Processing by AuthCredentialsController#create as JSON
+  Parameters: {"provider"=>"facebook"}
+  [1m[35mFacebookCredential Load (0.2ms)[0m  SELECT  "facebook_credentials".* FROM "facebook_credentials" WHERE "facebook_credentials"."uid" = ?  ORDER BY "facebook_credentials"."id" ASC LIMIT 1  [["uid", "123"]]
+  [1m[36m (0.1ms)[0m  [1mSELECT COUNT(*) FROM "users" WHERE "users"."id" IS NULL[0m
+  [1m[35m (0.0ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2015-08-03 01:10:15.368443"], ["updated_at", "2015-08-03 01:10:15.368443"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (1.0ms)[0m  INSERT INTO "facebook_credentials" ("uid", "token", "expires_at", "authenticatable_id", "authenticatable_type", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["uid", "123"], ["token", "abcdef"], ["expires_at", "2016-07-30 04:08:46.000000"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["created_at", "2015-08-03 01:10:15.375752"], ["updated_at", "2015-08-03 01:10:15.375752"]]
+  [1m[36m (0.0ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "auth_credentials" ("expires_at", "authenticatable_id", "authenticatable_type", "secret", "nonce", "scopes", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["expires_at", "2015-10-03 01:10:15.379215"], ["authenticatable_id", 1], ["authenticatable_type", "User"], ["secret", "bf4d24ebae6b49fa50e3a28c5e84f57710fe904c0daccb5869901ab11433"], ["nonce", "6e53e083d4cd1471bd1799726ea477"], ["scopes", "user admin editor"], ["created_at", "2015-08-03 01:10:15.383626"], ["updated_at", "2015-08-03 01:10:15.383626"]]
+  [1m[35m (0.0ms)[0m  RELEASE SAVEPOINT active_record_1
+Completed 201 Created in 70ms (Views: 0.2ms | ActiveRecord: 2.8ms)
