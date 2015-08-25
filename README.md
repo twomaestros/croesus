@@ -1,2 +1,2 @@
 # croesus
-Simple token-based auth for Rails API's
+Lightweight token-based auth for Rails
